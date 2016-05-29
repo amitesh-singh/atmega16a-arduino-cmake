@@ -1,5 +1,5 @@
 # necessary settings for the chip we use
-set(MCU atmega16)
+set(MCU atmega16a)
 set(F_CPU 16000000)
 set(BAUD 115200)
 
