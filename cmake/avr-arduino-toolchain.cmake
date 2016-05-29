@@ -231,7 +231,7 @@ endfunction()
 
 set(SKETCH_LIBS "" CACHE INTERNAL "arduino sketch libraries")
 # add a sketch dependency by giving the target and a git url
-function(target_sketch_library TARGET NAME URL BRANCH=master)
+function(target_sketch_library TARGET NAME URL BRANCH)
     setup_arduino_core()
     if (TARGET arduino-core AND NOT TARGET ${NAME})
         # try to install dependent libraries
@@ -246,10 +246,8 @@ function(target_sketch_library TARGET NAME URL BRANCH=master)
             if (NOT EXISTS ${MYLIBS}/${NAME})
                 message(STATUS "Installing ${NAME} (${URL})")
                 execute_process(
-                        COMMAND ${GIT_EXECUTABLE} clone "${URL}" "${NAME}"
+                        COMMAND ${GIT_EXECUTABLE} clone -b ${BRANCH} "${URL}" "${NAME}"
                         WORKING_DIRECTORY ${MYLIBS})
-                execute_process(
-                        COMMAND ${GIT_EXECUTABLE} checkout ${BRANCH})
             endif ()
 
             # now add a library target
