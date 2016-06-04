@@ -1,26 +1,18 @@
-/*
- * ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <joerg@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.        Joerg Wunsch
- * ----------------------------------------------------------------------------
- *
- * Stdio demo, UART declarations
- *
- * $Id: uart.h 1008 2005-12-28 21:38:59Z joerg_wunsch $
- */
-
 #ifndef UART_H
 #define UART_H
 
+#include <avr/io.h>
+#include <util/delay.h>
 #include <stdio.h>
 
+//At 1 MHz, BAUD set to 2400 worked. 9600 did not work.
+// http://wormfood.net/avrbaudcalc.php
+// conceptually 4800 also should work
+#define BAUD 2400UL                           // define baud
+#define BAUDRATE ((F_CPU)/(BAUD*16UL)-1)    // set baudrate value for UBRR
+
 #ifndef F_CPU
-#define F_CPU 16000000UL
-#endif
-#ifndef BAUD
-#define BAUD 9600UL
+#define F_CPU 1000000UL                    // set the CPU clock
 #endif
 
 /*
@@ -31,25 +23,9 @@ void uart_init(void);
 /*
  * Send one character to the UART.
  */
-int uart_putchar(char c, FILE *stream);
+void uart_transmit(unsigned char c);
 
-/*
- * Size of internal line buffer used by uart_getchar().
- */
-#ifndef RX_BUFSIZE
-#   define RX_BUFSIZE 80
-#endif
-
-/*
- * Receive one character from the UART.  The actual reception is
- * line-buffered, and one character is returned from the buffer at
- * each invokation.
- */
-int uart_getchar(FILE *stream);
-
-/**
- * A little prompt function to step through the code.
- */
-void prompt(char *p);
+unsigned char uart_recieve(void);
+void uart_print(const char *p);
 
 #endif //UART_H
